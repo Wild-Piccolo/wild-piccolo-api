@@ -1,6 +1,6 @@
 @Wild.Piccolo.Api_HostAddress = http://localhost:5200
 
-GET {{Wild.Piccolo.Api_HostAddress}}/weatherforecast/
+GET http://localhost:5200/weatherforecast/
 Accept: application/json
 
 ###

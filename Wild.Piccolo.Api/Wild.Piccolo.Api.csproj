@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Wild.Piccolo.Domain\Wild.Piccolo.Domain.csproj" />
+    <ProjectReference Include="..\Wild.Piccolo.Data\Wild.Piccolo.Data.csproj" />
   </ItemGroup>
 
 </Project>
