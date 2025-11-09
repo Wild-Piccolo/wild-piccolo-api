@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 // You will likely need this using statement to access the Item and Rating classes
-using Wild.Piccolo.Domain.Catalog; 
+using Wild.Piccolo.Domain.Catalog;
+using Wild.Piccolo.Data;
 
 namespace Wild.Piccolo.Api.Controllers // The namespace for your controller
 {
@@ -8,28 +9,17 @@ namespace Wild.Piccolo.Api.Controllers // The namespace for your controller
     [Route("[controller]")] // Sets the base route (e.g., /catalog)
     public class CatalogController : ControllerBase // Inherits from ControllerBase
     {
-        // This class is currently empty, but you will add methods (like GET, POST) here.
+        private readonly StoreContext _db;
 
+        public CatalogController(StoreContext db)
+        {
+            _db = db;
+        }
+        
         [HttpGet]
         public IActionResult GetItems()
         {
-            var items = new List<Item>()
-            {
-                new Item("Shirt", "Ohio State shirt.", "Nike", 29.99m),
-                new Item("Shorts", "Ohio State shorts.", "Nike", 44.99m)
-            };
-
-            return Ok(items);
-        }
-
-        [HttpGet("{id:int}")]
-        public IActionResult GetItem(int id)
-        {
-            // The image code assumes Item has a public property named Id.
-            var item = new Item("Shirt", "Ohio State shirt.", "Nike", 29.99m);
-            item.Id = id;
-
-            return Ok(item);
+            return Ok(_db.Items);
         }
 
         [HttpPost]
