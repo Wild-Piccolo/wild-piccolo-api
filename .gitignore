@@ -484,4 +484,4 @@ $RECYCLE.BIN/
 *.swp
 
 # Exclude database files
-*.sqlite
+*.sqlite*.sqlite*
