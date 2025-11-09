@@ -15,12 +15,23 @@ namespace Wild.Piccolo.Api.Controllers // The namespace for your controller
         {
             _db = db;
         }
-        
+
         [HttpGet]
         public IActionResult GetItems()
         {
             return Ok(_db.Items);
         }
+        
+        [HttpGet("{id:int}")]
+        public IActionResult GetItem(int id)
+        {
+            var item = _db.Items.Find(id);
+            if (item == null)
+        {
+            return NotFound();
+        }
+        return Ok();
+    }
 
         [HttpPost]
         public IActionResult Post(Item item)
