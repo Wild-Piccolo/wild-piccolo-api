@@ -1,5 +1,6 @@
 ﻿using Wild.Piccolo.Domain.Catalog;
 using Microsoft.EntityFrameworkCore;
+using Wild.Piccolo.Data;
 
 namespace Wild.Piccolo.Data
 {
@@ -9,10 +10,12 @@ namespace Wild.Piccolo.Data
         { }
 
         public DbSet<Item> Items { get; set; }
-    }
 
-    public class Class1
-    {
-        // Keep this empty class because instructions say not to remove it
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            DbInitializer.Initialize(builder);
+
+        }
     }
 }
