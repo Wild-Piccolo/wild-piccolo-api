@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 // You will likely need this using statement to access the Item and Rating classes
 using Wild.Piccolo.Domain.Catalog;
 using Wild.Piccolo.Data;
@@ -39,8 +40,21 @@ namespace Wild.Piccolo.Api.Controllers // The namespace for your controller
         }
 
         [HttpPut("{id:int}")]
-        public IActionResult Put(int id, Item item)
+        public IActionResult PutItem(int id, [FromBody] Item item)
         {
+            if (id != item.Id)
+            {
+                return BadRequest();
+            }
+
+            if (_db.Items.Find(id) == null)
+            {
+                return NotFound();
+            }
+
+            _db.Entry(item).State = EntityState.Modified;
+            _db.SaveChanges();
+
             return NoContent();
         }
         
