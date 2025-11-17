@@ -12,7 +12,7 @@ namespace Wild.Piccolo.Domain.Catalog
         {
             if (stars < 1 || stars > 5)
             {
-                throw new ArgumentOutOfRangeException(nameof(stars), "Stars must be between 1 and 5.");
+                throw new ArgumentException("Stars must be between 1 and 5.", nameof(stars));
             }
 
             if (string.IsNullOrWhiteSpace(userName))
