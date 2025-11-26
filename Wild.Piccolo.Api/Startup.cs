@@ -1,10 +1,14 @@
+using System;
 using Wild.Piccolo.Data;
+using Wild.Piccolo.Api.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Wild.Piccolo.Api
 {
@@ -19,13 +23,12 @@ namespace Wild.Piccolo.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            // 🔹 CORS setup – equivalent to builder.Services.AddCors(...) from the lab
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(builder =>
                 {
                     builder
-                        .WithOrigins("http://localhost:3001") // 👈 change if your React dev URL is different
+                        .WithOrigins("http://localhost:3001") 
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });
@@ -39,6 +42,32 @@ namespace Wild.Piccolo.Api
                 options.UseSqlite(
                     "Data Source=../Registrar.sqlite",
                     b => b.MigrationsAssembly("Wild.Piccolo.Api")));
+
+            var authority = Configuration["Auth0:Authority"]
+                ?? throw new ArgumentNullException("Auth0:Authority");
+            var audience = Configuration["Auth0:Audience"]
+                ?? throw new ArgumentNullException("Auth0:Audience");
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.Authority = authority; // e.g. https://dev-w41oo2aoxmw6zx6x.us.auth0.com/
+                options.Audience = audience;   // e.g. https://wild-piccolo-api
+            });
+
+            // 🔹 Authorization: define the delete:catalog scope policy
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("delete:catalog", policy =>
+                    policy.RequireAuthenticatedUser()
+                          .Requirements.Add(new HasScopeRequirement("delete:catalog", authority)));
+            });
+
+            services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -55,8 +84,9 @@ namespace Wild.Piccolo.Api
 
             app.UseRouting();
 
-            // 🔹 This matches the lab's app.UseCors() call
-            app.UseCors();   // uses the default policy defined above
+            app.UseCors();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

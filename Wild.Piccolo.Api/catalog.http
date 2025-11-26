@@ -1,0 +1,15 @@
+### GET token from Auth0
+curl --request POST \
+  --url https://dev-w41oo2aoxmw6zx6x.us.auth0.com/oauth/token \
+  --header 'content-type: application/json' \
+  --data '{
+    "client_id":"KrQOl3kbWyWEnglH1i9635PsA4nifSCF",
+    "client_secret":"6D79OZjeNM8wPcDrgVFOow7mRdltS0bi-xMtqiSIgLHgs5tDffLI7aoAMck2LA9q",
+    "audience":"https://wild-piccolo-api",
+    "grant_type":"client_credentials"
+  }'
+
+### DELETE an item from the Catalog collection
+curl --request DELETE \
+  --url http://localhost:5200/Catalog/3 \
+  --header 'authorization: Bearer PASTE_YOUR_TOKEN_HERE'
