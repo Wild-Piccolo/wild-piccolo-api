@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+
 using Microsoft.EntityFrameworkCore;
 // You will likely need this using statement to access the Item and Rating classes
 using Wild.Piccolo.Domain.Catalog;
@@ -59,6 +61,7 @@ namespace Wild.Piccolo.Api.Controllers // The namespace for your controller
         }
         
         [HttpDelete("{id:int}")]
+        [Authorize(Policy = "delete:catalog")]
         public IActionResult DeleteItem(int id)
         {
             var item = _db.Items.Find(id);
